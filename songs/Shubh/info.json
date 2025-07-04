@@ -1,4 +1,9 @@
 {
-    "title": "Shubh",
-    "description": "Lets Vibe..!"
+  "title": "Shubh Tracks",
+  "description": "Trending Rap & Hip-Hop",
+  "songs": [
+    "Fell For You.mp3",
+    "One Love.mp3",
+    "Supreme.mp3"
+  ]
 }

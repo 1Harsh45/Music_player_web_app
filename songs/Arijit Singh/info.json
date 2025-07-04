@@ -1,4 +1,9 @@
 {
-    "title": "Arijit Singh",
-    "description": "Arijit Singh for you"
+  "title": "Arijit Singh Hits",
+  "description": "Best of Arijit",
+  "songs": [
+    "Apna Bana Le.mp3",
+    "Channa Mereya.mp3",
+    "Kesariya.mp3"
+  ]
 }

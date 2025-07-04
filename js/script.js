@@ -19,68 +19,44 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
     currFolder = folder;
-    let a = await fetch(`/${folder}/`)
-    let response = await a.text();
-    let div = document.createElement("div")
-    div.innerHTML = response;
-    let as = div.getElementsByTagName("a")
-    songs = []
-    for (let index = 0; index < as.length; index++) {
-        const element = as[index];
-        if (element.href.endsWith(".mp3")) {
-            songs.push(element.href.split(`/${folder}/`)[1])
-        }
+
+    const res = await fetch(`/${folder}/info.json`);
+    const data = await res.json();
+    songs = data.songs;
+
+    // Show all the songs in the playlist
+    const songUL = document.querySelector(".songList ul");
+    songUL.innerHTML = "";
+
+    for (const song of songs) {
+        songUL.innerHTML += `
+            <li>
+                <img class="invert" width="34" src="img/music.svg" alt="">
+                <div class="info">
+                    <div>${song}</div>
+                    <div></div>
+                </div>
+                <div class="playnow">
+                    <span>Play Now</span>
+                    <img class="invert" src="img/play.svg" alt="">
+                </div>
+            </li>`;
     }
 
+    // Click handlers to play songs & animate
+    document.querySelectorAll(".songList li").forEach((li, index) => {
+        li.addEventListener("click", () => {
+            playMusic(songs[index]);
 
-
-   // Show all the songs in the playlist
-let songUL = document.querySelector(".songList").getElementsByTagName("ul")[0];
-songUL.innerHTML = "";
-
-for (const song of songs) {
-    songUL.innerHTML += `
-        <li>
-            <img class="invert" width="34" src="img/music.svg" alt="">
-            <div class="info">
-                <div>${song.replaceAll("%20", " ")}</div>
-                <div></div>
-            </div>
-            <div class="playnow">
-                <span>Play Now</span>
-                <img class="invert" src="img/play.svg" alt="">
-            </div>
-        </li>`;
-}
-
-// ✅ Attaching event listeners AFTER updating the DOM
-const songCards = document.querySelectorAll('.songList ul li');
-
-songCards.forEach(card => {
-    card.addEventListener('click', () => {
-        // Remove the class from all cards first
-        songCards.forEach(c => c.classList.remove('clicked'));
-
-        // Reflow trick to restart animation
-        void card.offsetWidth;
-
-        // Add the clicked class
-        card.classList.add('clicked');
+            document.querySelectorAll(".songList li").forEach(el => el.classList.remove("clicked"));
+            void li.offsetWidth;
+            li.classList.add("clicked");
+        });
     });
-});
 
-
-
-    // Attach an event listener to each song
-    Array.from(document.querySelector(".songList").getElementsByTagName("li")).forEach(e => {
-        e.addEventListener("click", element => {
-            playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim())
-
-        })
-    })
-
-    return songs
+    return songs;
 }
+
 
 const playMusic = (track, pause = false) => {
     currentSong.src = `/${currFolder}/` + track
@@ -96,7 +72,7 @@ const playMusic = (track, pause = false) => {
 
 async function displayAlbums() {
     console.log("displaying albums")
-    let a = await fetch(`http://127.0.0.1:3000/songs/`)
+   let a = await fetch(`songs/${folder}/info.json`)
     let response = await a.text();
     let div = document.createElement("div")
     div.innerHTML = response;
@@ -108,7 +84,7 @@ async function displayAlbums() {
         if (e.href.includes("/songs") && !e.href.includes(".htaccess")) {
             let folder = e.href.split("/").slice(-2)[0]
             // Get the metadata of the folder
-            let a = await fetch(`http://127.0.0.1:3000/songs/${folder}/info.json`)
+          let a = await fetch(`songs/${folder}/info.json`)
             let response = await a.json();
             cardContainer.innerHTML = cardContainer.innerHTML + ` <div data-folder="${folder}" class="card">
             <div class="play">
@@ -139,8 +115,9 @@ async function displayAlbums() {
 
 async function main() {
     // Get the list of all the songs
-    await getSongs("songs/ncs")
+    await getSongs("songs/Arijit Singh")
     playMusic(songs[0], true)
+
 
     // Display all the albums on the page
     await displayAlbums()

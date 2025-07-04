@@ -1,4 +1,9 @@
 {
-    "title": "Diljit Dosanjh",
-    "description": "Lets Rock..!"
+  "title": "Diljit Dosanjh Vibes",
+  "description": "Lets Rock..!",
+  "songs": [
+    "Born To Shine.mp3",
+    "Hass Hass.mp3",
+    "Water.mp3"
+  ]
 }
