@@ -74,7 +74,13 @@ const playMusic = (track, pause = false) => {
 async function displayAlbums() {
     console.log("Displaying albums");
 
-    const folders = ["arijit", "karan", "shub", "diljit"]; // Add your folders here
+    const folders = [
+        "Arijit Singh",
+        "Diljit Dosanjh",
+        "Karan Aujla",
+        "Shubh"
+    ];
+
     const cardContainer = document.querySelector(".cardContainer");
 
     for (const folder of folders) {
@@ -101,7 +107,7 @@ async function displayAlbums() {
         }
     }
 
-    // Card click events
+    // Attach click event to each card
     document.querySelectorAll(".card").forEach(e => {
         e.addEventListener("click", async item => {
             const folder = item.currentTarget.dataset.folder;
@@ -113,15 +119,16 @@ async function displayAlbums() {
 }
 
 
-    // Load the playlist whenever card is clicked
-    Array.from(document.getElementsByClassName("card")).forEach(e => {
-        e.addEventListener("click", async item => {
-            console.log("Fetching Songs")
-            songs = await getSongs(`songs/${item.currentTarget.dataset.folder}`)
-            playMusic(songs[0])
 
-        })
+// Load the playlist whenever card is clicked
+Array.from(document.getElementsByClassName("card")).forEach(e => {
+    e.addEventListener("click", async item => {
+        console.log("Fetching Songs")
+        songs = await getSongs(`songs/${item.currentTarget.dataset.folder}`)
+        playMusic(songs[0])
+
     })
+})
 
 
 async function main() {
