@@ -72,29 +72,18 @@ const playMusic = (track, pause = false) => {
 
 
 async function displayAlbums() {
-    console.log("displaying albums");
+    console.log("Displaying albums");
 
-    let a = await fetch(`songs/`);
-    let response = await a.text();
-    let div = document.createElement("div");
-    div.innerHTML = response;
+    const folders = ["arijit", "karan", "shub", "diljit"]; // Add your folders here
+    const cardContainer = document.querySelector(".cardContainer");
 
-    let anchors = div.getElementsByTagName("a");
-    let cardContainer = document.querySelector(".cardContainer");
-    let array = Array.from(anchors);
+    for (const folder of folders) {
+        try {
+            const res = await fetch(`songs/${folder}/info.json`);
+            const info = await res.json();
 
-    for (let index = 0; index < array.length; index++) {
-        const e = array[index];
-        if (e.href.includes("/songs") && !e.href.includes(".htaccess")) {
-            let folder = e.href.split("/").slice(-2)[0];
-
-            // ✅ Get metadata from the folder's info.json
-            let meta = await fetch(`songs/${folder}/info.json`);
-            let info = await meta.json();
-
-            // ✅ Append album card
             cardContainer.innerHTML += `
-                <div data-folder="${folder}" class="card">
+                <div data-folder="songs/${folder}" class="card">
                     <div class="play">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -102,22 +91,27 @@ async function displayAlbums() {
                                 stroke-linejoin="round" />
                         </svg>
                     </div>
+
                     <img src="songs/${folder}/cover.jpg" alt="">
                     <h2>${info.title}</h2>
                     <p>${info.description}</p>
                 </div>`;
+        } catch (error) {
+            console.error(`Could not load album: ${folder}`, error);
         }
     }
 
-    // ✅ Attach click handlers
-    Array.from(document.getElementsByClassName("card")).forEach(e => {
+    // Card click events
+    document.querySelectorAll(".card").forEach(e => {
         e.addEventListener("click", async item => {
-            console.log("Fetching Songs");
-            songs = await getSongs(`songs/${item.currentTarget.dataset.folder}`);
+            const folder = item.currentTarget.dataset.folder;
+            console.log("Fetching songs from", folder);
+            songs = await getSongs(folder);
             playMusic(songs[0]);
         });
     });
 }
+
 
     // Load the playlist whenever card is clicked
     Array.from(document.getElementsByClassName("card")).forEach(e => {
